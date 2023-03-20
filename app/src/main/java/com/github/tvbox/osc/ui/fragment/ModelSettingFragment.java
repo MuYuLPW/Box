@@ -174,8 +174,14 @@ public class ModelSettingFragment extends BaseLazyFragment {
             @Override
             public void onClick(View v) {
                 ArrayList<String> history = Hawk.get(HawkConfig.API_HISTORY, new ArrayList<String>());
-                if (history.isEmpty())
-                    return;
+                if (history.isEmpty()){
+                    history.add("https://raw.liucn.cc/box/xiaopingguo.json");
+                    history.add("https://raw.iqiq.io/liu673cn/box/main/m.json");
+                    history.add("https://agit.ai/relax/adcc...anch/master/tvbox.json");
+                    history.add("https://gitlab.com/ygbh.../raw/main/dcang/1.json");
+                    history.add("https://agit.ai/liucn/box/raw/branch/main/m.json");
+                    history.add("https://raw.liucn.cc/box/m.json");
+                }
                 String current = Hawk.get(HawkConfig.API_URL, "");
                 int idx = 0;
                 if (history.contains(current))

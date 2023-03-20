@@ -58,6 +58,9 @@
         <entry key="..\:/android/repository/TVBoxOSC/app/src/main/res/layout/activity_live_play.xml" value="0.1" />
         <entry key="..\:/android/repository/TVBoxOSC/app/src/main/res/layout/item_channel_group_layout.xml" value="0.22826086956521738" />
         <entry key="..\:/android/repository/TVBoxOSC/app/src/main/res/layout/item_live_channel_layout.xml" value="0.22826086956521738" />
+        <entry key="..\:/androidProject/Box/app/src/main/res/drawable/hm_history.xml" value="0.213" />
+        <entry key="..\:/androidProject/Box/app/src/main/res/layout/dialog_backup.xml" value="0.2143559488692232" />
+        <entry key="..\:/androidProject/Box/app/src/main/res/layout/fragment_model.xml" value="0.24427083333333333" />
       </map>
     </option>
   </component>

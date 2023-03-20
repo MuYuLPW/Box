@@ -6,8 +6,10 @@ import android.animation.AnimatorSet;
 import android.animation.IntEvaluator;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -30,10 +32,12 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DiffUtil;
+import androidx.room.util.StringUtil;
 import androidx.viewpager.widget.ViewPager;
 
 import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.api.ApiConfig;
+import com.github.tvbox.osc.base.App;
 import com.github.tvbox.osc.base.BaseActivity;
 import com.github.tvbox.osc.base.BaseLazyFragment;
 import com.github.tvbox.osc.bean.AbsSortXml;
@@ -63,16 +67,22 @@ import com.owen.tvrecyclerview.widget.TvRecyclerView;
 import com.owen.tvrecyclerview.widget.V7GridLayoutManager;
 import com.owen.tvrecyclerview.widget.V7LinearLayoutManager;
 
+import org.apache.commons.lang3.StringUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import me.jessyan.autosize.utils.AutoSizeUtils;
@@ -127,6 +137,7 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void init() {
         // takagen99: Added to allow read string
+        closeAndroid10Dialog();
         res = getResources();
 
         EventBus.getDefault().register(this);
@@ -140,7 +151,20 @@ public class HomeActivity extends BaseActivity {
             useCacheConfig = bundle.getBoolean("useCache", false);
         }
         initData();
+//        initDefaultData();
     }
+
+//    //加载默认数据源
+//    private void initDefaultData() {
+//        ArrayList<String> history = Hawk.get(HawkConfig.API_HISTORY, new ArrayList<String>());
+//        if(history.size()==0){
+//
+//            Hawk.put(HawkConfig.API_HISTORY,"java.lang.String##1V@AQIT/78xKDWpZgO50FkphcONGJPhcqQ3vyZpEMOfTbRwI8qgvXqJ/LkeTqNVOqd6xqGVmLM65/dynr00EnzRIqN1P/TjISnLsAmzpQmlBuNJ4GhAQGJajAU8b5pLNGgAQfn8q3zDuIuYJOcItkntvj/iNeL7EaywtG01aiyMgbXl1svIHVdJizDqZPwcJKX1MYfkBrGikHwLXtcEHBguG+Joae0QiRj+TVRrYSqAdbdB29YAwK9VdpvY0xPwP+fgOeAFULD0lp0CaUAGg40DNJdobJSUwF1dMH75nbnmLpdtz+CWJWefFRVDlzPd8PCj012H/pdGFyYYYc51zS/flisu29V+94l0FuIOoQnFe4b/zaPVk3zNnCLZavWv+yYsDfBXXLuY5lha/bQJK0byFCxp5syfZi6zFtTiFBFZvz4=");
+//            Hawk.put(HawkConfig.API_URL,"java.lang.String##0V@AQKdfkOqGidwgxMBo1qpaNETkkI72hcrXMzZiopyJbwW2tSTCtnqNbGdjSIIVqaYzzDTwCKF+kjMLjUdBQ916u0II9xzaQMiGA==");
+//        }
+//
+//
+//    }
 
     // takagen99: Added to allow read string
     public static Resources getRes() {
@@ -830,5 +854,26 @@ public class HomeActivity extends BaseActivity {
 //            jumpActivity(SettingActivity.class);
 //        }
 //    }
+
+    public void closeAndroid10Dialog(){
+        try {
+            Class aClass = Class.forName("android.content.pm.PackageParser$Package");
+            Constructor declaredConstructor = aClass.getDeclaredConstructor(String.class);
+            declaredConstructor.setAccessible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            Class cls = Class.forName("android.app.ActivityThread");
+            Method declaredMethod = cls.getDeclaredMethod("currentActivityThread");
+            declaredMethod.setAccessible(true);
+            Object activityThread = declaredMethod.invoke(null);
+            Field mHiddenApiWarningShown = cls.getDeclaredField("mHiddenApiWarningShown");
+            mHiddenApiWarningShown.setAccessible(true);
+            mHiddenApiWarningShown.setBoolean(activityThread, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }
