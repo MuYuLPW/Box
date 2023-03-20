@@ -594,6 +594,9 @@ public class HomeActivity extends BaseActivity {
                 } else {
                     exit();
                 }
+            } else if (baseLazyFragment instanceof UserFragment && UserFragment.tvHotListForGrid.canScrollVertically(-1)) {
+                UserFragment.tvHotListForGrid.scrollToPosition(0);
+                this.mGridView.setSelection(0);
             } else {
                 exit();
             }
@@ -669,7 +672,7 @@ public class HomeActivity extends BaseActivity {
         boolean activated = count > 0;
         currentView.findViewById(R.id.tvFilter).setVisibility(View.VISIBLE);
         ImageView imgView = currentView.findViewById(R.id.tvFilter);
-        imgView.setColorFilter(activated?this.getThemeColor(): Color.WHITE);
+        imgView.setColorFilter(activated ? this.getThemeColor() : Color.WHITE);
     }
 
     private final Runnable mDataRunnable = new Runnable() {
@@ -780,7 +783,10 @@ public class HomeActivity extends BaseActivity {
 
     // Site Switch on Home Button
     void showSiteSwitch() {
-        List<SourceBean> sites = ApiConfig.get().getSourceBeanList();
+        List<SourceBean> sites = new ArrayList<>();
+        for (SourceBean sb : ApiConfig.get().getSourceBeanList()) {
+            if (sb.getHide() == 0) sites.add(sb);
+        }
         if (sites.size() > 0) {
             SelectDialog<SourceBean> dialog = new SelectDialog<>(HomeActivity.this);
 
